@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { AppState, ExamConfig, ExamSession, Question, ExamHistoryItem, AppTheme, Language } from './types';
 import { StartScreen } from './components/StartScreen';
@@ -26,18 +25,19 @@ const App: React.FC = () => {
     if (savedState) {
       try {
         const parsed = JSON.parse(savedState);
-        // Rehydrate the Set from the array
-        const rehydratedSession: ExamSession = {
-          ...parsed,
-          flaggedQuestions: new Set(parsed.flaggedQuestions)
-        };
-        setCurrentSession(rehydratedSession);
-        // Restore language from session if available
-        if (rehydratedSession.language) {
-            setLanguage(rehydratedSession.language);
+        if (parsed && typeof parsed === 'object') {
+          // Rehydrate the Set from the array
+          const rehydratedSession: ExamSession = {
+            ...parsed,
+            flaggedQuestions: new Set(Array.isArray(parsed.flaggedQuestions) ? parsed.flaggedQuestions : [])
+          };
+          setCurrentSession(rehydratedSession);
+          if (rehydratedSession.language) {
+              setLanguage(rehydratedSession.language);
+          }
         }
       } catch (e) {
-        console.error("Failed to load saved state", e);
+        console.warn("Failed to load saved state:", e);
         localStorage.removeItem(STORAGE_KEY);
       }
     }
@@ -46,9 +46,12 @@ const App: React.FC = () => {
     const savedHistory = localStorage.getItem(HISTORY_KEY);
     if (savedHistory) {
       try {
-        setExamHistory(JSON.parse(savedHistory));
+        const parsed = JSON.parse(savedHistory);
+        if (Array.isArray(parsed)) {
+          setExamHistory(parsed);
+        }
       } catch (e) {
-        console.error("Failed to load history", e);
+        console.warn("Failed to load history:", e);
       }
     }
 
@@ -64,45 +67,33 @@ const App: React.FC = () => {
     localStorage.setItem(THEME_KEY, newTheme);
   };
 
-  // Helper to save current state to localStorage
   const saveProgress = useCallback((session: ExamSession) => {
-    const sessionToSave = {
-      ...session,
-      // Convert Set to Array for JSON serialization
-      flaggedQuestions: Array.from(session.flaggedQuestions)
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionToSave));
+    try {
+      const sessionToSave = {
+        ...session,
+        flaggedQuestions: Array.from(session.flaggedQuestions || [])
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionToSave));
+    } catch (err) {
+      console.error("Storage error:", err);
+    }
   }, []);
 
   const handleStartExam = async (config: ExamConfig) => {
     setAppState(AppState.LOADING_EXAM);
     setError(null);
-    setLanguage(config.language); // Update global language state
+    setLanguage(config.language);
 
     try {
       const questions = await generateQuestions(config.subject, config.questionCount, config.language);
       
-      // Calculate duration based on specific rules:
-      // 5 items  -> 5 minutes
-      // 10 items -> 15 minutes
-      // 20 items -> 30 minutes
-      // 30 items -> 45 minutes
       let duration = 0;
       switch (config.questionCount) {
-        case 5:
-          duration = 5 * 60; // 5 minutes
-          break;
-        case 10:
-          duration = 15 * 60; // 15 minutes
-          break;
-        case 20:
-          duration = 30 * 60; // 30 minutes
-          break;
-        case 30:
-          duration = 45 * 60; // 45 minutes
-          break;
-        default:
-          duration = config.questionCount * 90; // Fallback 1.5 min/q
+        case 5: duration = 5 * 60; break;
+        case 10: duration = 15 * 60; break;
+        case 20: duration = 30 * 60; break;
+        case 30: duration = 45 * 60; break;
+        default: duration = config.questionCount * 90;
       }
       
       const newSession: ExamSession = {
@@ -120,7 +111,8 @@ const App: React.FC = () => {
       saveProgress(newSession);
       setAppState(AppState.EXAM_ACTIVE);
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+      console.error("Question Generation Failed:", err);
+      setError(err.message || "Failed to generate examination questions. Please check your network and try again.");
       setAppState(AppState.HOME);
     }
   };
@@ -156,11 +148,13 @@ const App: React.FC = () => {
     setCurrentSession(prev => {
       if (!prev) return null;
       const updated = { ...prev, secondsRemaining: remaining };
-      const sessionToSave = {
-        ...updated,
-        flaggedQuestions: Array.from(updated.flaggedQuestions)
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionToSave));
+      try {
+        const sessionToSave = {
+          ...updated,
+          flaggedQuestions: Array.from(updated.flaggedQuestions || [])
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionToSave));
+      } catch (e) {}
       return updated;
     });
   }, []);
@@ -169,7 +163,6 @@ const App: React.FC = () => {
     setCurrentSession(current => {
       if (!current) return null;
 
-      // Calculate results
       let correct = 0;
       current.questions.forEach(q => {
         if (current.userAnswers[q.id] === q.correctOptionIndex) {
@@ -180,7 +173,6 @@ const App: React.FC = () => {
       const score = Math.round((correct / total) * 100);
       const passed = score >= 75;
 
-      // Create history item
       const historyItem: ExamHistoryItem = {
         id: `exam-${Date.now()}`,
         date: Date.now(),
@@ -190,18 +182,16 @@ const App: React.FC = () => {
         passed
       };
 
-      // Update history state and storage
       setExamHistory(prevHistory => {
         const newHistory = [historyItem, ...prevHistory];
         localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory));
         return newHistory;
       });
 
-      // Clear active session storage
       localStorage.removeItem(STORAGE_KEY);
       setAppState(AppState.RESULTS);
       
-      return current; // Return current state as we are unmounting anyway
+      return current;
     });
   }, []);
 
@@ -226,8 +216,9 @@ const App: React.FC = () => {
             initialLanguage={language}
           />
           {error && (
-            <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              <span className="block sm:inline">{error}</span>
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white border border-red-200 text-red-600 px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[320px]" role="alert">
+              <span className="flex-1 font-medium">{error}</span>
+              <button onClick={() => setError(null)} className="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
             </div>
           )}
         </>
@@ -243,20 +234,13 @@ const App: React.FC = () => {
 
       {appState === AppState.LOADING_EXAM && (
         <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white overflow-hidden relative">
-          {/* Background decoration */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900 to-slate-900 z-0"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900 to-slate-900 z-0 opacity-60"></div>
           
           <div className="relative z-10 flex flex-col items-center">
-            {/* EU Flag A320 Loader */}
             <div className="relative w-48 h-48 mb-10">
-              {/* Outer Glow */}
-              <div className="absolute inset-0 rounded-full bg-blue-600/20 blur-xl animate-pulse"></div>
-              
-              {/* EU Flag Circle */}
+              <div className="absolute inset-0 rounded-full bg-blue-600/20 blur-2xl animate-pulse"></div>
               <div className="absolute inset-0 rounded-full bg-[#003399] border-4 border-[#FFCC00] shadow-2xl flex items-center justify-center overflow-hidden">
-                 
-                 {/* Ring of 12 Stars */}
-                 <div className="absolute inset-0 w-full h-full">
+                 <div className="absolute inset-0 w-full h-full opacity-30">
                    <svg viewBox="0 0 100 100" className="w-full h-full p-1">
                       <defs>
                          <path id="star" d="M 0 -1 L 0.22 -0.31 L 0.95 -0.31 L 0.36 0.12 L 0.59 0.81 L 0 0.38 L -0.59 0.81 L -0.36 0.12 L -0.95 -0.31 L -0.22 -0.31 Z" fill="#FFCC00" />
@@ -270,29 +254,20 @@ const App: React.FC = () => {
                       </g>
                    </svg>
                  </div>
-
-                 {/* Rotating A320 */}
-                 <div className="w-20 h-20 animate-[spin_2s_linear_infinite] z-10 origin-center">
-                   <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)]">
-                     <path 
-                       fill="white"
-                       d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" 
-                     />
+                 <div className="w-20 h-20 animate-[spin_2.5s_linear_infinite] z-10 origin-center">
+                   <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]">
+                     <path fill="white" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
                    </svg>
                  </div>
               </div>
             </div>
 
-            <div className="text-center space-y-3">
-              <h2 className="text-2xl font-bold tracking-widest font-mono text-white drop-shadow-md">
-                PREPARING YOUR TEST
-              </h2>
-              <div className="w-64 h-1 bg-slate-800 rounded-full mx-auto overflow-hidden border border-slate-700">
-                <div className="h-full bg-[#FFCC00] animate-[pulse_1s_ease-in-out_infinite] w-full origin-left"></div>
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl font-bold tracking-[0.2em] font-mono text-white drop-shadow-lg">GENERATING EXAMINATION</h2>
+              <div className="w-64 h-1.5 bg-slate-800 rounded-full mx-auto overflow-hidden border border-slate-700/50">
+                <div className="h-full bg-[#FFCC00] animate-[shimmer_2s_infinite] w-full origin-left bg-gradient-to-r from-transparent via-yellow-200 to-transparent"></div>
               </div>
-              <p className="text-slate-400 font-mono text-xs tracking-wider uppercase">
-                GET READY FOR EASA-EXAM PARAMETERS...
-              </p>
+              <p className="text-slate-400 font-mono text-xs tracking-widest uppercase animate-pulse">Consulting AI Knowledge Bank...</p>
             </div>
           </div>
         </div>
@@ -318,6 +293,12 @@ const App: React.FC = () => {
           theme={theme}
         />
       )}
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
     </div>
   );
 };
