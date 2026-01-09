@@ -1,0 +1,5 @@
+{
+  "name": "EASA Simulated Pre-Test",
+  "description": "An intelligent EASA-style aviation examination simulator powered by Gemini. Practice Air Law, Meteorology, Human Performance, and more with AI-generated questions and detailed explanations.",
+  "requestFramePermissions": []
+}
