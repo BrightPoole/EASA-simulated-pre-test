@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,7 +15,7 @@
         font-family: 'JetBrains Mono', monospace;
       }
     </style>
-    <!-- Safety shim for process.env -->
+    <!-- Essential shim for process.env used by SDKs -->
     <script>
       window.process = window.process || { env: {} };
     </script>
@@ -37,6 +36,6 @@
 </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
