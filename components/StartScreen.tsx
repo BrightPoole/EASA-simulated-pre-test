@@ -19,7 +19,7 @@ const UI_TEXT = {
     configTitle: "Exam Configuration",
     subjectLabel: "Subject Area",
     questionsLabel: "Number of Questions",
-    languageLabel: "Language Selection",
+    languageLabel: "Internationalization",
     startBtn: "Start Examination",
     rulesTitle: "Standard Rules",
     rule1: "Pass mark is 75%",
@@ -37,7 +37,7 @@ const UI_TEXT = {
     configTitle: "Prüfungskonfiguration",
     subjectLabel: "Fachgebiet",
     questionsLabel: "Anzahl der Fragen",
-    languageLabel: "Sprachauswahl",
+    languageLabel: "Internationalisierung",
     startBtn: "Prüfung starten",
     rulesTitle: "Standardregeln",
     rule1: "Bestehensgrenze liegt bei 75%",
@@ -55,7 +55,7 @@ const UI_TEXT = {
     configTitle: "Configuration de l'examen",
     subjectLabel: "Sujet",
     questionsLabel: "Nombre de questions",
-    languageLabel: "Choix de la langue",
+    languageLabel: "Internationalisation",
     startBtn: "Commencer l'examen",
     rulesTitle: "Règles standard",
     rule1: "La note de passage est de 75%",
@@ -125,7 +125,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Left: Configuration */}
         <div className={`md:col-span-2 rounded-2xl shadow-sm border p-8 transition-colors ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
           <h2 className={`text-xl font-semibold mb-6 flex items-center ${isDark ? 'text-white' : 'text-slate-900'}`}>
             <BookOpen className={`w-5 h-5 mr-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
@@ -187,9 +186,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           </div>
         </div>
 
-        {/* Right: Sidebar */}
         <div className="space-y-6">
-          {/* Rules */}
           <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-lg">
             <h3 className="font-semibold text-lg mb-4 flex items-center">
               <Clock className="w-5 h-5 mr-2 text-blue-400" />
@@ -215,7 +212,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </ul>
           </div>
           
-          {/* Disclaimer */}
           <div className={`border rounded-2xl p-6 ${isDark ? 'bg-yellow-900/20 border-yellow-900/50' : 'bg-yellow-50 border-yellow-200'}`}>
              <h3 className={`font-semibold text-sm mb-2 flex items-center ${isDark ? 'text-yellow-400' : 'text-yellow-800'}`}>
               <AlertCircle className="w-4 h-4 mr-2" />
@@ -226,13 +222,13 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </p>
           </div>
 
-          {/* Globe Icon Container for Languages - Centered below disclaimer */}
+          {/* Premium Internationalization Card */}
           <div className={`rounded-2xl p-6 shadow-sm border text-center transition-all ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
-            <div className="flex flex-col items-center mb-4">
-               <div className={`p-4 rounded-full mb-3 bg-gradient-to-tr from-blue-600 to-blue-400 shadow-md transform hover:scale-110 transition-transform`}>
+            <div className="flex flex-col items-center mb-5">
+               <div className={`p-4 rounded-full mb-3 shadow-lg transform hover:scale-105 transition-transform bg-gradient-to-br from-blue-600 to-blue-400`}>
                   <Globe className="w-8 h-8 text-white" />
                </div>
-               <h3 className={`font-bold text-sm tracking-wide uppercase ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+               <h3 className={`font-bold text-xs tracking-widest uppercase ${isDark ? 'text-blue-400' : 'text-slate-500'}`}>
                  {text.languageLabel}
                </h3>
             </div>
@@ -241,7 +237,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                {/* English */}
                <button
                   onClick={() => setLanguage('en')}
-                  className={`py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                  className={`py-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
                      language === 'en' 
                      ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30' 
                      : isDark 
@@ -249,7 +245,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                        : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                   }`}
                >
-                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
+                  <div className="w-9 h-6 mb-2 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
                     <svg viewBox="0 0 60 30" className="w-full h-full">
                        <rect width="60" height="30" fill="#012169"/>
                        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6"/>
@@ -264,7 +260,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                {/* German */}
                <button
                   onClick={() => setLanguage('de')}
-                  className={`py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                  className={`py-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
                      language === 'de' 
                      ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30' 
                      : isDark 
@@ -272,7 +268,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                        : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                   }`}
                >
-                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
+                  <div className="w-9 h-6 mb-2 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
                     <svg viewBox="0 0 5 3" className="w-full h-full">
                        <rect width="5" height="3" y="0" x="0" fill="#000"/>
                        <rect width="5" height="2" y="1" x="0" fill="#DD0000"/>
@@ -285,7 +281,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                {/* French */}
                <button
                   onClick={() => setLanguage('fr')}
-                  className={`py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
+                  className={`py-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
                      language === 'fr' 
                      ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30' 
                      : isDark 
@@ -293,7 +289,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                        : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                   }`}
                >
-                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
+                  <div className="w-9 h-6 mb-2 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
                     <svg viewBox="0 0 3 2" className="w-full h-full">
                        <rect width="3" height="2" fill="#ED2939"/>
                        <rect width="2" height="2" fill="#fff"/>
@@ -305,7 +301,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </div>
           </div>
 
-          {/* History */}
           {examHistory.length > 0 && (
             <div className={`rounded-2xl p-6 shadow-sm border ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
               <h3 className={`font-semibold text-sm mb-4 flex items-center ${isDark ? 'text-white' : 'text-slate-900'}`}>
