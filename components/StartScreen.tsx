@@ -19,7 +19,7 @@ const UI_TEXT = {
     configTitle: "Exam Configuration",
     subjectLabel: "Subject Area",
     questionsLabel: "Number of Questions",
-    languageLabel: "Select Interface Language",
+    languageLabel: "Language Selection",
     startBtn: "Start Examination",
     rulesTitle: "Standard Rules",
     rule1: "Pass mark is 75%",
@@ -27,7 +27,7 @@ const UI_TEXT = {
     rule3: "Review flagged questions before submitting",
     rule4: "Precise explanations provided upon completion",
     disclaimerTitle: "Disclaimer",
-    disclaimerText: "This application is for training purposes only. Questions are based on one of the developer's certification by taking the EASA test in Zurich and may strictly not reflect the exact phrasing of official question banks (ECQB). Always consult official study materials for real exams.",
+    disclaimerText: "This application is for training purposes only. Questions are based on certification by taking the EASA test in Zurich and may not reflect the exact phrasing of official question banks (ECQB). Always consult official study materials.",
     historyTitle: "Pilot Logbook",
     devBtn: "Developer & System Info"
   },
@@ -37,7 +37,7 @@ const UI_TEXT = {
     configTitle: "Prüfungskonfiguration",
     subjectLabel: "Fachgebiet",
     questionsLabel: "Anzahl der Fragen",
-    languageLabel: "Sprache auswählen",
+    languageLabel: "Sprachauswahl",
     startBtn: "Prüfung starten",
     rulesTitle: "Standardregeln",
     rule1: "Bestehensgrenze liegt bei 75%",
@@ -45,7 +45,7 @@ const UI_TEXT = {
     rule3: "Markierte Fragen vor Abgabe überprüfen",
     rule4: "Präzise Erklärungen nach Abschluss",
     disclaimerTitle: "Haftungsausschluss",
-    disclaimerText: "Diese Anwendung dient nur zu Übungszwecken. Die Fragen basieren auf der Zertifizierung eines Entwicklers (EASA-Test in Zürich) und spiegeln möglicherweise nicht den genauen Wortlaut der offiziellen Fragendatenbank (ECQB) wider. Konsultieren Sie immer offizielle Lernmaterialien.",
+    disclaimerText: "Diese Anwendung dient nur zu Übungszwecken. Die Fragen basieren auf einer EASA-Prüfung in Zürich und spiegeln möglicherweise nicht den Wortlaut der offiziellen Fragendatenbank (ECQB) wider. Nutzen Sie offizielle Lernmaterialien.",
     historyTitle: "Pilotenlogbuch",
     devBtn: "Entwickler & Systeminfo"
   },
@@ -55,7 +55,7 @@ const UI_TEXT = {
     configTitle: "Configuration de l'examen",
     subjectLabel: "Sujet",
     questionsLabel: "Nombre de questions",
-    languageLabel: "Choisir la langue",
+    languageLabel: "Choix de la langue",
     startBtn: "Commencer l'examen",
     rulesTitle: "Règles standard",
     rule1: "La note de passage est de 75%",
@@ -63,7 +63,7 @@ const UI_TEXT = {
     rule3: "Revoir les questions signalées avant de soumettre",
     rule4: "Explications précises fournies à la fin",
     disclaimerTitle: "Avertissement",
-    disclaimerText: "Cette application est uniquement à des fins de formation. Les questions sont basées sur la certification de l'un des développeurs (test EASA à Zurich) et peuvent ne pas refléter exactement la formulation des banques de questions officielles (ECQB). Consultez toujours les supports d'étude officiels.",
+    disclaimerText: "Cette application est à des fins de formation. Les questions sont basées sur un test EASA à Zurich et peuvent ne pas refléter exactement la formulation officielle (ECQB). Consultez toujours les supports officiels.",
     historyTitle: "Carnet de vol",
     devBtn: "Info développeur & système"
   }
@@ -96,17 +96,12 @@ export const StartScreen: React.FC<StartScreenProps> = ({
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        {/* EU Aviation Logo */}
         <div className="mb-8 flex justify-center">
           <svg width="140" height="140" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" className="shadow-2xl rounded-full">
-            {/* EU Flag Background */}
             <circle cx="60" cy="60" r="60" fill="#003399" />
-            
-            {/* 12 Stars */}
             <g transform="translate(60, 60)">
               {[...Array(12)].map((_, i) => (
                 <g key={i} transform={`rotate(${i * 30}) translate(0, -42)`}>
-                  {/* 5-point Star Shape */}
                   <path 
                     d="M0 -3.5 L0.9 -1.1 L3.3 -1.1 L1.4 0.4 L2.1 2.8 L0 1.4 L-2.1 2.8 L-1.4 0.4 L-3.3 -1.1 L-0.9 -1.1 Z" 
                     fill="#FFCC00" 
@@ -114,8 +109,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   />
                 </g>
               ))}
-              
-              {/* Airplane Icon (Centered) */}
               <path 
                 d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" 
                 fill="white" 
@@ -132,7 +125,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Configuration Card */}
+        {/* Left: Configuration */}
         <div className={`md:col-span-2 rounded-2xl shadow-sm border p-8 transition-colors ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
           <h2 className={`text-xl font-semibold mb-6 flex items-center ${isDark ? 'text-white' : 'text-slate-900'}`}>
             <BookOpen className={`w-5 h-5 mr-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
@@ -194,8 +187,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           </div>
         </div>
 
-        {/* Info Card & History */}
+        {/* Right: Sidebar */}
         <div className="space-y-6">
+          {/* Rules */}
           <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-lg">
             <h3 className="font-semibold text-lg mb-4 flex items-center">
               <Clock className="w-5 h-5 mr-2 text-blue-400" />
@@ -221,7 +215,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </ul>
           </div>
           
-          {/* Disclaimer Card */}
+          {/* Disclaimer */}
           <div className={`border rounded-2xl p-6 ${isDark ? 'bg-yellow-900/20 border-yellow-900/50' : 'bg-yellow-50 border-yellow-200'}`}>
              <h3 className={`font-semibold text-sm mb-2 flex items-center ${isDark ? 'text-yellow-400' : 'text-yellow-800'}`}>
               <AlertCircle className="w-4 h-4 mr-2" />
@@ -232,30 +226,30 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </p>
           </div>
 
-          {/* New Language Selector Card with Globe Icon Header */}
-          <div className={`rounded-2xl p-6 shadow-sm border transition-all ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
+          {/* Globe Icon Container for Languages - Centered below disclaimer */}
+          <div className={`rounded-2xl p-6 shadow-sm border text-center transition-all ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
             <div className="flex flex-col items-center mb-4">
-               <div className={`p-3 rounded-full mb-3 ${isDark ? 'bg-blue-900/40' : 'bg-blue-50'}`}>
-                  <Globe className={`w-6 h-6 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+               <div className={`p-4 rounded-full mb-3 bg-gradient-to-tr from-blue-600 to-blue-400 shadow-md transform hover:scale-110 transition-transform`}>
+                  <Globe className="w-8 h-8 text-white" />
                </div>
                <h3 className={`font-bold text-sm tracking-wide uppercase ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                  {text.languageLabel}
                </h3>
             </div>
             
-            <div className="grid grid-cols-3 gap-2">
-               {/* English (UK) */}
+            <div className="grid grid-cols-3 gap-2 px-1">
+               {/* English */}
                <button
                   onClick={() => setLanguage('en')}
                   className={`py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
                      language === 'en' 
-                     ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-500 shadow-sm' 
+                     ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30' 
                      : isDark 
-                       ? 'border-slate-800 bg-slate-800/50 hover:border-slate-600 hover:bg-slate-800' 
-                       : 'border-slate-100 bg-slate-50/50 hover:border-slate-200 hover:bg-slate-50'
+                       ? 'border-slate-800 bg-slate-800 hover:border-slate-600' 
+                       : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                   }`}
                >
-                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm">
+                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
                     <svg viewBox="0 0 60 30" className="w-full h-full">
                        <rect width="60" height="30" fill="#012169"/>
                        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6"/>
@@ -264,7 +258,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                        <path d="M30,0 L30,30 M0,15 L60,15" stroke="#C8102E" strokeWidth="6"/>
                     </svg>
                   </div>
-                  <span className={`text-[10px] font-bold uppercase tracking-tighter ${language === 'en' ? 'text-blue-700' : isDark ? 'text-slate-500' : 'text-slate-600'}`}>English</span>
+                  <span className={`text-[10px] font-bold tracking-tighter uppercase ${language === 'en' ? 'text-blue-700' : 'text-slate-500'}`}>EN</span>
                </button>
                
                {/* German */}
@@ -272,20 +266,20 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   onClick={() => setLanguage('de')}
                   className={`py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
                      language === 'de' 
-                     ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-500 shadow-sm' 
+                     ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30' 
                      : isDark 
-                       ? 'border-slate-800 bg-slate-800/50 hover:border-slate-600 hover:bg-slate-800' 
-                       : 'border-slate-100 bg-slate-50/50 hover:border-slate-200 hover:bg-slate-50'
+                       ? 'border-slate-800 bg-slate-800 hover:border-slate-600' 
+                       : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                   }`}
                >
-                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm">
+                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
                     <svg viewBox="0 0 5 3" className="w-full h-full">
                        <rect width="5" height="3" y="0" x="0" fill="#000"/>
                        <rect width="5" height="2" y="1" x="0" fill="#DD0000"/>
                        <rect width="5" height="1" y="2" x="0" fill="#FFCC00"/>
                     </svg>
                   </div>
-                  <span className={`text-[10px] font-bold uppercase tracking-tighter ${language === 'de' ? 'text-blue-700' : isDark ? 'text-slate-500' : 'text-slate-600'}`}>Deutsch</span>
+                  <span className={`text-[10px] font-bold tracking-tighter uppercase ${language === 'de' ? 'text-blue-700' : 'text-slate-500'}`}>DE</span>
                </button>
 
                {/* French */}
@@ -293,25 +287,25 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   onClick={() => setLanguage('fr')}
                   className={`py-3 rounded-xl border flex flex-col items-center justify-center transition-all ${
                      language === 'fr' 
-                     ? 'border-blue-600 bg-blue-50/50 ring-1 ring-blue-500 shadow-sm' 
+                     ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/30' 
                      : isDark 
-                       ? 'border-slate-800 bg-slate-800/50 hover:border-slate-600 hover:bg-slate-800' 
-                       : 'border-slate-100 bg-slate-50/50 hover:border-slate-200 hover:bg-slate-50'
+                       ? 'border-slate-800 bg-slate-800 hover:border-slate-600' 
+                       : 'border-slate-100 bg-slate-50 hover:border-slate-200'
                   }`}
                >
-                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm">
+                  <div className="w-8 h-5 mb-1.5 shadow-sm overflow-hidden rounded-sm border border-slate-200/20">
                     <svg viewBox="0 0 3 2" className="w-full h-full">
                        <rect width="3" height="2" fill="#ED2939"/>
                        <rect width="2" height="2" fill="#fff"/>
                        <rect width="1" height="2" fill="#002395"/>
                     </svg>
                   </div>
-                  <span className={`text-[10px] font-bold uppercase tracking-tighter ${language === 'fr' ? 'text-blue-700' : isDark ? 'text-slate-500' : 'text-slate-600'}`}>Français</span>
+                  <span className={`text-[10px] font-bold tracking-tighter uppercase ${language === 'fr' ? 'text-blue-700' : 'text-slate-500'}`}>FR</span>
                </button>
             </div>
           </div>
 
-          {/* Pilot Logbook (History) */}
+          {/* History */}
           {examHistory.length > 0 && (
             <div className={`rounded-2xl p-6 shadow-sm border ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
               <h3 className={`font-semibold text-sm mb-4 flex items-center ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -331,11 +325,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                     </div>
                   </div>
                 ))}
-                {examHistory.length > 3 && (
-                   <div className="text-center text-xs text-slate-400 mt-2">
-                     + {examHistory.length - 3} more entries
-                   </div>
-                )}
               </div>
             </div>
           )}
