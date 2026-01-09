@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Question, ExamSession, AppTheme } from '../types';
-import { Button } from './Button';
+import { Question, ExamSession, AppTheme } from '../types.ts';
+import { Button } from './Button.tsx';
 import { Flag, ChevronLeft, ChevronRight, Clock, LayoutGrid, CheckCircle, ClipboardList } from 'lucide-react';
 
 interface ExamViewProps {
@@ -56,7 +56,7 @@ const UI_TEXT = {
     next: "Suivant",
     finish: "Terminer",
     answered: "répondu",
-    current: "Actuel",
+    current: "Aktuel",
     flagged: "Signalé",
     notAttempted: "Non tenté",
     close: "Fermer"
@@ -72,16 +72,13 @@ export const ExamView: React.FC<ExamViewProps> = ({
   theme
 }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // Initialize state once from props
   const [timeLeft, setTimeLeft] = useState(session.secondsRemaining ?? session.durationSeconds);
   const [showGrid, setShowGrid] = useState(false);
   
-  // Refs for drift correction and callback stability
   const startTimeRef = useRef(Date.now());
   const initialTimeRef = useRef(session.secondsRemaining ?? session.durationSeconds);
   const lastTimeUpdateRef = useRef(timeLeft);
   
-  // Stable refs for callbacks to prevent useEffect re-subscriptions
   const onTimeUpdateRef = useRef(onTimeUpdate);
   const onSubmitRef = useRef(onSubmit);
 
@@ -103,14 +100,12 @@ export const ExamView: React.FC<ExamViewProps> = ({
   const answeredCount = Object.keys(session.userAnswers).length;
   const progressPercent = Math.round((answeredCount / totalQuestions) * 100);
   
-  // Timer visualization calcs
   const totalDuration = session.durationSeconds;
   const timePercentage = Math.max(0, (timeLeft / totalDuration) * 100);
   const circleRadius = 18;
   const circumference = 2 * Math.PI * circleRadius;
   const strokeDashoffset = circumference - (timePercentage / 100) * circumference;
 
-  // Determine timer color state
   let timerColorClass = isDark ? "text-blue-400" : "text-blue-600";
   let ringColorClass = "stroke-blue-600";
   
@@ -122,7 +117,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
     ringColorClass = "stroke-orange-500";
   }
 
-  // Timer Interval Logic - Empty dependency array ensures stability
   useEffect(() => {
     const timer = setInterval(() => {
       const now = Date.now();
@@ -131,10 +125,8 @@ export const ExamView: React.FC<ExamViewProps> = ({
       
       setTimeLeft(newTimeLeft);
       
-      // Submit immediately if time runs out
       if (newTimeLeft <= 0) {
         clearInterval(timer);
-        // Ensure UI updates to 00:00 before submitting
         setTimeLeft(0);
         setTimeout(() => {
             onSubmitRef.current();
@@ -142,7 +134,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
         return;
       }
       
-      // Update parent/storage every 5 seconds or when critical
       if (Math.abs(lastTimeUpdateRef.current - newTimeLeft) >= 5 || newTimeLeft < 15) {
         onTimeUpdateRef.current(newTimeLeft);
         lastTimeUpdateRef.current = newTimeLeft;
@@ -151,12 +142,11 @@ export const ExamView: React.FC<ExamViewProps> = ({
 
     return () => {
       clearInterval(timer);
-      // Save exact time on unmount if we didn't finish
       if (lastTimeUpdateRef.current > 0) {
         onTimeUpdateRef.current(lastTimeUpdateRef.current); 
       }
     };
-  }, []); // Intentionally empty to prevent re-renders from resetting the interval
+  }, []);
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -192,7 +182,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
 
   return (
     <div className="flex flex-col h-screen bg-transparent">
-      {/* Top Bar */}
       <header className={`border-b px-6 py-3 flex items-center justify-between sticky top-0 z-10 transition-colors ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
         <div className="flex items-center space-x-4">
            <div className="flex flex-col">
@@ -202,7 +191,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
         </div>
 
         <div className="flex items-center space-x-6">
-          {/* Progress Indicator */}
           <div className="hidden lg:flex flex-col items-end">
              <div className="flex items-center mb-1 space-x-2">
                 <span className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>{text.progress}</span>
@@ -218,10 +206,8 @@ export const ExamView: React.FC<ExamViewProps> = ({
 
           <div className={`h-8 w-px hidden lg:block ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
 
-          {/* Enhanced Timer */}
           <div className={`flex items-center px-3 py-1.5 rounded-lg border ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-slate-50 border-slate-200'}`}>
              <div className="relative w-9 h-9 mr-3 flex items-center justify-center">
-                {/* Background Ring */}
                 <svg className="w-full h-full transform -rotate-90">
                    <circle
                      className={isDark ? "text-slate-700" : "text-slate-200"}
@@ -232,7 +218,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
                      cx="18"
                      cy="18"
                    />
-                   {/* Progress Ring */}
                    <circle
                      className={`${ringColorClass} transition-all duration-1000 ease-linear`}
                      strokeWidth="3"
@@ -277,10 +262,8 @@ export const ExamView: React.FC<ExamViewProps> = ({
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-3xl mx-auto">
-            {/* Position Bar */}
             <div className={`w-full h-1.5 rounded-full mb-8 ${isDark ? 'bg-blue-900/40' : 'bg-slate-200/50'}`}>
               <div 
                 className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
@@ -288,7 +271,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
               ></div>
             </div>
 
-            {/* Question Card */}
             <div className={`rounded-xl shadow-sm border p-6 md:p-10 mb-6 transition-colors ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className="flex justify-between items-start mb-6">
                 <h2 className={`text-xl md:text-2xl font-medium leading-relaxed ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -347,7 +329,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between items-center">
               <Button
                 variant="outline"
@@ -389,7 +370,6 @@ export const ExamView: React.FC<ExamViewProps> = ({
           </div>
         </main>
 
-        {/* Sidebar / Grid Overlay for Mobile */}
         <aside className={`
           ${showGrid ? 'translate-x-0' : 'translate-x-full md:translate-x-0'} 
           fixed md:relative inset-y-0 right-0 w-72 border-l shadow-xl md:shadow-none transition-transform duration-300 z-20 md:block

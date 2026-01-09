@@ -1,6 +1,6 @@
 import React from 'react';
-import { ExamSession, Question, AppTheme } from '../types';
-import { Button } from './Button';
+import { ExamSession, Question, AppTheme } from '../types.ts';
+import { Button } from './Button.tsx';
 import { CheckCircle, XCircle, RotateCcw, Home, Award, AlertTriangle, PieChart, BarChart3 } from 'lucide-react';
 
 interface ResultsViewProps {
@@ -67,17 +67,14 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ session, onRestart, on
   const isDark = theme === 'blue';
   const text = UI_TEXT[session.language || 'en'];
   
-  // Calculate total score and per-topic stats
   const topicStats: Record<string, { correct: number; total: number }> = {};
 
   session.questions.forEach(q => {
-    // Score
     const isCorrect = session.userAnswers[q.id] === q.correctOptionIndex;
     if (isCorrect) {
       correct++;
     }
 
-    // Topic aggregation
     const topic = q.topic || "General Knowledge";
     if (!topicStats[topic]) {
       topicStats[topic] = { correct: 0, total: 0 };
@@ -94,8 +91,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ session, onRestart, on
   return (
     <div className="min-h-screen bg-transparent py-12 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
-        
-        {/* Score Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
           <div className={`p-8 text-center ${passed ? 'bg-green-50' : 'bg-red-50'}`}>
             <div className="inline-flex justify-center items-center w-20 h-20 bg-white rounded-full shadow-sm mb-4">
@@ -140,7 +135,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ session, onRestart, on
           </div>
         </div>
 
-        {/* Topic Breakdown */}
         {Object.keys(topicStats).length > 0 && (
           <div className="mb-8">
             <h2 className={`text-xl font-bold mb-4 flex items-center ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -184,7 +178,6 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ session, onRestart, on
           </div>
         )}
 
-        {/* Detailed Review */}
         <h2 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>{text.detailedReview}</h2>
         <div className="space-y-6">
           {session.questions.map((q, idx) => {

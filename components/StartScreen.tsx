@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
-import { Subject, ExamConfig, ExamHistoryItem, AppTheme, Language } from '../types';
-import { Button } from './Button';
+import { Subject, ExamConfig, ExamHistoryItem, AppTheme, Language } from '../types.ts';
+import { Button } from './Button.tsx';
 import { BookOpen, Clock, AlertCircle, Code, History, CheckCircle, XCircle, Globe } from 'lucide-react';
 
 interface StartScreenProps {
@@ -222,7 +221,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </p>
           </div>
 
-          {/* Premium Internationalization Card */}
           <div className={`rounded-2xl p-6 shadow-sm border text-center transition-all ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
             <div className="flex flex-col items-center mb-5">
                <div className={`p-4 rounded-full mb-3 shadow-lg transform hover:scale-105 transition-transform bg-gradient-to-br from-blue-600 to-blue-400`}>
@@ -234,7 +232,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
             </div>
             
             <div className="grid grid-cols-3 gap-2 px-1">
-               {/* English */}
                <button
                   onClick={() => setLanguage('en')}
                   className={`py-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
@@ -257,7 +254,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   <span className={`text-[10px] font-bold tracking-tighter uppercase ${language === 'en' ? 'text-blue-700' : 'text-slate-500'}`}>EN</span>
                </button>
                
-               {/* German */}
                <button
                   onClick={() => setLanguage('de')}
                   className={`py-4 rounded-xl border flex flex-col items-center justify-center transition-all ${
@@ -278,7 +274,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
                   <span className={`text-[10px] font-bold tracking-tighter uppercase ${language === 'de' ? 'text-blue-700' : 'text-slate-500'}`}>DE</span>
                </button>
 
-               {/* French */}
                <button
                   onClick={() => setLanguage('fr')}
                   className={`py-4 rounded-xl border flex flex-col items-center justify-center transition-all ${

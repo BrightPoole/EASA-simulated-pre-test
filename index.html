@@ -15,9 +15,9 @@
         font-family: 'JetBrains Mono', monospace;
       }
     </style>
-    <!-- Essential shim for process.env used by SDKs -->
     <script>
-      window.process = window.process || { env: {} };
+      // Global shim for libraries expecting process.env
+      window.process = window.process || { env: { NODE_ENV: 'production' } };
     </script>
     <script type="importmap">
 {

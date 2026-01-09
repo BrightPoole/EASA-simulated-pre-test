@@ -1,8 +1,7 @@
-
 import React from 'react';
-import { Button } from './Button';
+import { Button } from './Button.tsx';
 import { Code, ArrowLeft, Database, ShieldCheck, Palette } from 'lucide-react';
-import { AppTheme } from '../types';
+import { AppTheme } from '../types.ts';
 
 interface DeveloperSectionProps {
   onBack: () => void;
@@ -42,7 +41,6 @@ export const DeveloperSection: React.FC<DeveloperSectionProps> = ({ onBack, them
           </div>
 
           <div className="p-8 grid gap-8">
-            {/* Architecture */}
             <section>
               <h3 className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center ${isDark ? 'text-blue-300' : 'text-slate-900'}`}>
                 <Database className="w-4 h-4 mr-2 text-slate-500" />
@@ -64,7 +62,6 @@ export const DeveloperSection: React.FC<DeveloperSectionProps> = ({ onBack, them
               </ul>
             </section>
 
-             {/* Appearance Settings */}
              <section>
               <h3 className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center ${isDark ? 'text-blue-300' : 'text-slate-900'}`}>
                 <Palette className="w-4 h-4 mr-2 text-slate-500" />
@@ -91,7 +88,6 @@ export const DeveloperSection: React.FC<DeveloperSectionProps> = ({ onBack, them
               </div>
             </section>
             
-            {/* Legal / Disclaimer */}
              <section>
               <h3 className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center ${isDark ? 'text-blue-300' : 'text-slate-900'}`}>
                 <ShieldCheck className="w-4 h-4 mr-2 text-slate-500" />

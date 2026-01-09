@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { AppState, ExamConfig, ExamSession, Question, ExamHistoryItem, AppTheme, Language } from './types';
-import { StartScreen } from './components/StartScreen';
-import { ExamView } from './components/ExamView';
-import { ResultsView } from './components/ResultsView';
-import { DeveloperSection } from './components/DeveloperSection';
-import { generateQuestions } from './services/geminiService';
+import { AppState, ExamConfig, ExamSession, Question, ExamHistoryItem, AppTheme, Language } from './types.ts';
+import { StartScreen } from './components/StartScreen.tsx';
+import { ExamView } from './components/ExamView.tsx';
+import { ResultsView } from './components/ResultsView.tsx';
+import { DeveloperSection } from './components/DeveloperSection.tsx';
+import { generateQuestions } from './services/geminiService.ts';
 
 const STORAGE_KEY = 'EASA_EXAM_STATE';
 const HISTORY_KEY = 'EASA_EXAM_HISTORY';
